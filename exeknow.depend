@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1461242000 source:c:\cwork\exeknow\exeknow.c
+	"exeknow.h"
+	<stdio.h>
+	<stdlib.h>
+
+1461493508 c:\cwork\exeknow\exeknow.h
+	<stdint.h>
+	<stdio.h>
+
+1461227066 source:c:\cwork\exeknow\main.c
+	<stdio.h>
+	<stdlib.h>
+	"exeknow.h"
+
