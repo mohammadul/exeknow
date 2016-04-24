@@ -327,6 +327,11 @@ int exeknow_get_details_mz(FILE* fp)
                 fprintf(stdout, "Format: PE\n");
                 exeknow_get_details_pe(fp, exe_offset);
             }
+            else if(exe_type[0]=='N' && exe_type[1]=='E')
+            {
+                fprintf(stdout, "Format: NE\n");
+                exeknow_get_details_ne(fp, exe_offset);
+            }
             else if(exe_type[0]=='L' && exe_type[1]=='E')
             {
                 fprintf(stdout, "Format: LE\n");
@@ -466,4 +471,5 @@ void exeknow_know(const char* fname)
     if((fp = fopen(fname, "rb"))==NULL) exeknow_error(EXEKNOW_ERROR_FILE_OPEN);
     ftype = exeknow_get_filetype(fp);
     exeknow_get_details(fp, ftype, fname);
+    fclose(fp);
 }
