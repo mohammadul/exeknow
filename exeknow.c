@@ -408,6 +408,15 @@ int exeknow_get_details_elf(FILE* fp)
             case EXEKNOW_ELF_MACHINE_SPARC9:
                 fprintf(stdout, "SPARC9\n");
                 break;
+            case EXEKNOW_ELF_MACHINE_AMDx86_64:
+                fprintf(stdout, "AMDx86_64\n");
+                break;
+            case EXEKNOW_ELF_MACHINE_AVR8:
+                fprintf(stdout, "AVR8\n");
+                break;
+            case EXEKNOW_ELF_MACHINE_AVR32:
+                fprintf(stdout, "AVR32\n");
+                break;
             default:
                 fprintf(stdout, "Other\n");
             }
