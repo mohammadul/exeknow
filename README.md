@@ -10,4 +10,5 @@ Supported File Formats
 3. New Executable (NE)
 4. Portable Executable (PE)  
 5. Executable and Linkable Format (ELF) 
+6. Symbian Executable (E32)
 
