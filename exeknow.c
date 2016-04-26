@@ -66,6 +66,12 @@ int exeknow_get_filetype(FILE* fp)
         if(fread(etype, 4, 1, fp)!=1) exeknow_error(EXEKNOW_ERROR_FILE_READ);
         if(etype[0]=='M' && etype[1]=='Z') type = EXEKNOW_TYPE_MZ;
         else if(etype[0]==0x7F && etype[1]=='E' && etype[2]=='L' && etype[3]=='F') type = EXEKNOW_TYPE_ELF;
+        else
+        {
+            fseek(fp, 0x10, SEEK_SET);
+            if(fread(etype, 4, 1, fp)!=1) exeknow_error(EXEKNOW_ERROR_FILE_READ);
+            if(etype[0]=='E' && etype[1]=='P' && etype[2]=='O' && etype[3]=='C') type = EXEKNOW_TYPE_E32;
+        }
         return type;
     }
     return EXEKNOW_ERROR_FILE_OPEN;
@@ -448,6 +454,78 @@ int exeknow_get_details_elf(FILE* fp)
     return EXEKNOW_ERROR_FILE_OPEN;
 }
 
+int exeknow_get_details_e32(FILE* fp)
+{
+    if(fp!=NULL)
+    {
+        e32_header e3h;
+        uint16_t machine;
+        fseek(fp, 0, SEEK_SET);
+        if(fread(&e3h, sizeof(e32_header), 1, fp)!=1) exeknow_error(EXEKNOW_ERROR_FILE_READ);
+        if(e3h.signature[0]=='E' && e3h.signature[1]=='P' && e3h.signature[2]=='O' && e3h.signature[3]=='C')
+        {
+            fprintf(stdout, "------------\nE32 Details:\n------------\nMachine: ");
+            fseek(fp, 0x7A, SEEK_SET);
+            if(fread(&machine, sizeof(uint16_t), 1, fp)!=1) exeknow_error(EXEKNOW_ERROR_FILE_READ);
+            switch(machine)
+            {
+            case 0x1000:
+                fprintf(stdout, "I386\n");
+                break;
+            case 0x2000:
+                fprintf(stdout, "ARM\n");
+                break;
+            default:
+                fprintf(stdout, "Other\n");
+            }
+            fprintf(stdout, "Import Format: ");
+            switch(e3h.flags2&EXEKNOW_E32_IMP_FORMAT)
+            {
+            case 0x00:
+                fprintf(stdout, "PE\n");
+                break;
+            case 0x10:
+                fprintf(stdout, "ELF\n");
+                break;
+            case 0x20:
+                fprintf(stdout, "PE-R\n");
+                break;
+            default:
+                fprintf(stdout, "Other\n");
+            }
+            fprintf(stdout, "Characteristics: ");
+            if(e3h.flags1&EXEKNOW_E32_ITYPE_DLL)
+            {
+                fprintf(stdout, "DLL ");
+            }
+            else fprintf(stdout, "EXEC ");
+            switch(e3h.flags1&EXEKNOW_E32_ABI)
+            {
+                case 0x00:
+                fprintf(stdout, "GCC98r2 ");
+                break;
+                case 0x08:
+                fprintf(stdout, "EABI ");
+                break;
+            }
+            switch(e3h.flags1&EXEKNOW_E32_ENTRYPOINT_TYPE)
+            {
+                case 0x00:
+                fprintf(stdout, "EKA1 ");
+                break;
+                case 0x20:
+                fprintf(stdout, "EKA2 ");
+                break;
+            }
+            fprintf(stdout, "\n");
+            fseek(fp, 0L, SEEK_SET);
+            return 0;
+        }
+        return EXEKNOW_ERROR_BAD_FTYPE;
+    }
+    return EXEKNOW_ERROR_FILE_OPEN;
+}
+
 int exeknow_get_details(FILE* fp, int ftype, const char* fname)
 {
     int ret = EXEKNOW_OK;
@@ -465,6 +543,10 @@ int exeknow_get_details(FILE* fp, int ftype, const char* fname)
     case EXEKNOW_TYPE_ELF:
         fprintf(stdout, "ELF\n");
         exeknow_get_details_elf(fp);
+        break;
+    case EXEKNOW_TYPE_E32:
+        fprintf(stdout, "E32\n");
+        exeknow_get_details_e32(fp);
         break;
     default:
         fprintf(stdout, "Unknown\n");

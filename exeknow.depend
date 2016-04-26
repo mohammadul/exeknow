@@ -13,3 +13,18 @@
 	<stdlib.h>
 	"exeknow.h"
 
+1461509194 source:c:\users\cvlab\documents\exeknow\main.c
+	<stdio.h>
+	<stdlib.h>
+	"exeknow.h"
+
+1461691113 c:\users\cvlab\documents\exeknow\exeknow.h
+	<stdint.h>
+	<stdio.h>
+
+1461692159 source:c:\users\cvlab\documents\exeknow\exeknow.c
+	"exeknow.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

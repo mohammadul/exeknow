@@ -28,6 +28,7 @@
 #define EXEKNOW_TYPE_UNKNOWN (-1)
 #define EXEKNOW_TYPE_MZ (1)
 #define EXEKNOW_TYPE_ELF (2)
+#define EXEKNOW_TYPE_E32 (3)
 
 #define EXEKNOW_ERROR_FILE_OPEN (-1)
 #define EXEKNOW_ERROR_FILE_READ (-2)
@@ -76,6 +77,11 @@
 #define EXEKNOW_ELF_MACHINE_AMDx86_64 (62)
 #define EXEKNOW_ELF_MACHINE_AVR8 (83)
 #define EXEKNOW_ELF_MACHINE_AVR32 (185)
+
+#define EXEKNOW_E32_ITYPE_DLL (0x00000001)
+#define EXEKNOW_E32_IMP_FORMAT (0xF0)
+#define EXEKNOW_E32_ABI (0x18)
+#define EXEKNOW_E32_ENTRYPOINT_TYPE (0xE0)
 
 typedef struct mz_header
 {
@@ -175,6 +181,23 @@ typedef struct  elf_header
 } elf_header; /**< ELF header */
 
 
+typedef struct e32_header
+{
+    uint32_t uid1;
+    uint32_t uid2;
+    uint32_t uid3;
+    uint32_t uid_checksum;
+    uint8_t signature[4];
+    uint32_t crc_32;
+    uint32_t version;
+    uint32_t compression_type;
+    uint32_t translator_version;
+    uint32_t time_stamp;
+    uint8_t flags1;
+    uint16_t reserved;
+    uint8_t flags2;
+} e32_header; /**< E32 header */
+
 const char *exeknow_getfilename(char const *path);
 void exeknow_error(int type);
 int exeknow_get_filetype(FILE* fp);
@@ -183,6 +206,7 @@ void exeknow_get_details_ne(FILE* fp, uint16_t offset);
 void exeknow_get_details_le(FILE* fp, uint16_t offset);
 int exeknow_get_details_mz(FILE* fp);
 int exeknow_get_details_elf(FILE* fp);
+int exeknow_get_details_e32(FILE* fp);
 int exeknow_get_details(FILE* fp, int ftype, const char* fname);
 void exeknow_know(const char* fname);
 #endif // EXEKNOW_H_INCLUDED
