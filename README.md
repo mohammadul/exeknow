@@ -1,4 +1,4 @@
-# exeknow
+# exeknow [![Build Status](https://travis-ci.org/mohammadul/exeknow.svg?branch=master)](https://travis-ci.org/mohammadul/exeknow)
 An Executable File Information Viewer
 
 
